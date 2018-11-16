@@ -28,15 +28,15 @@ def clock(num_packets, packet_len, fs=48000, fdev=200, f=800, br=1200):
     upsample = lcm([br, fs])
     rep = upsample/br
     signalLen = rep*packet_len*num_packets
-    
+
     arr = []
-    
+
     ctr = 1
     i = 0
     for j in range(int(rep/2)):
         arr += [ctr]
         i+= 1
-    
+
     ctr *=-1
     j = 0
     while i<signalLen:
@@ -71,7 +71,7 @@ def nc_afsk1200Demod(sig, baud = 1200, cf = 1700, fdev = 500, fs=48000.0, width=
 
     an_high_envelops = signal.hilbert(highvals)
     high_envelope = np.abs(an_high_envelops)
-    
+
     diff = low_envelope - high_envelope
     return np.sign(diff)
 
@@ -96,7 +96,7 @@ def genSignal(bits, baud, signal_cf, clock_cf, fdev, fs, packet_size):
     return modulated
 
 def transmit(bits, baud=1200, signal_cf=1000, clock_cf=2000, fdev=500, fs=48000, packet_size=4):
-    modulated = genSignal(bits, baud, signal_cf, clock_cf, fdev, fs, packet_size) 
+    modulated = genSignal(bits, baud, signal_cf, clock_cf, fdev, fs, packet_size)
     sd.play(modulated, fs)
 
 def receiveFromSignal(recording, packet_size, baud, signal_cf, clock_cf, fdev, fs, duration):
@@ -109,6 +109,3 @@ def receive(packet_size=4, baud=300, signal_cf=1000, clock_cf=2000, fdev=500, fs
     sd.wait()
     recording = [x[0] for x in myrecording]
     return receiveFromSignal(recording, packet_size, baud, signal_cf, clock_cf, fdev, fs, duration)
-
-
-
