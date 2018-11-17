@@ -7,7 +7,7 @@ from bitarray import bitarray
 import sounddevice as sd
 import values
 
-def solo_encode(packet,size,error=2):
+def solo_encode(packet,size,error=5):
     if not isinstance(packet, str):
         packet = str(packet)[str(packet).find('\'') + 1:-2]
     i = 0
@@ -20,10 +20,10 @@ def solo_encode(packet,size,error=2):
     pack = solomon.encode(temp)
     for b in pack:
         bits += bin(b)[2:].rjust(8, '0')
-    return bits
+    return temp
 
 
-def solo_decode(packet,size,error=2):
+def solo_decode(packet,size,error=5):
     i = 0
     bits = ''
     solomon = rs.RSCodec(error)

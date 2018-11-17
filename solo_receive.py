@@ -6,7 +6,7 @@ import values
 a = HuffmanCode()
 c = Receiver()
 
-def solo_decode(packet,size,error=2):
+def solo_decode(packet,size,error=5):
     i = 0
     bits = ''
     solomon = rs.RSCodec(error)
@@ -19,7 +19,7 @@ def solo_decode(packet,size,error=2):
         for b in pack:
             bits += bin(b)[2:].rjust(8, '0')
         return bits
-    except:
+    except rs.ReedSolomonError:
         print("Fail")
         return -1
 
@@ -39,7 +39,6 @@ while not c.isDone() and count<len(packets):
     temp=solo_decode(s,8+16+16)
     if temp != -1:
         temp = bytearray(temp, 'utf8')
-        print("received", temp)
         c.receive_packet(temp)
     count+=1
 
