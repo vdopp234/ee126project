@@ -11,7 +11,7 @@ import values
 a = HuffmanCode()
 c = Receiver()
 
-def solo_decode(packet,size,error=5):
+def solo_decode(packet,size,error=2):
     i = 0
     bits = ''
     solomon = rs.RSCodec(error)
