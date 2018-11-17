@@ -43,15 +43,12 @@ while not c.isDone() and count<len(packets):
         continue
     temp=solo_decode(s,7*8)
     if temp != -1:
+        check = Pack(temp, sent=True)
+        if check.check_checksum():
+            temp = check.get_received_packet()
         temp = bytearray(temp, 'utf8')
+        print("received", temp)
         c.receive_packet(temp)
-        if temp != -1:
-            check = Pack(temp, sent=True)
-            if check.check_checksum():
-                temp = check.get_received_packet()
-            temp = bytearray(temp, 'utf8')
-            print("received", temp)
-            c.receive_packet(temp)
     count+=1
 
 de=c.decoded_chunks
