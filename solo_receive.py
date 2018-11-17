@@ -1,8 +1,13 @@
-from Receiver import *
-from HuffmanCode import *
-from sound import transmit, receive
 import reedsolo as rs
+from Receiver import *
+from Transmitter import *
+from HuffmanCode import *
+from checksum import *
+from sound import transmit, receive
+from bitarray import bitarray
+from checksum import Packet as Pack
 import values
+
 a = HuffmanCode()
 c = Receiver()
 
@@ -24,7 +29,7 @@ def solo_decode(packet,size,error=2):
         return -1
 
 
-packets = receive(packet_size=8+16+16, baud=values.baud, signal_cf=values.sig_cf, clock_cf=values.clock_cf, fdev=values.delta, fs=values.fs, duration=30, taps=50, width = 200)
+packets = receive(packet_size=8*8, baud=values.baud, signal_cf=values.sig_cf, clock_cf=values.clock_cf, fdev=values.delta, fs=values.fs, duration=30, taps=50, width = 200)
 
 count=0
 while not c.isDone() and count<len(packets):
@@ -32,15 +37,19 @@ while not c.isDone() and count<len(packets):
     s = ""
     for b in received:
         s+=str(b)
-    if len(s) != 8+16+16:
+    if len(s) != 8*8:
         print('wrong number of bits')
         count+=1
         continue
-    temp=solo_decode(s,8+16+16)
+    temp=solo_decode(s,8*8)
     if temp != -1:
-        temp = bytearray(temp, 'utf8')
-        print("received", temp)
-        c.receive_packet(temp)
+        if temp != -1:
+            check = Pack(temp, sent=True)
+            if check.check_checksum():
+                temp = check.get_received_packet()
+            temp = bytearray(temp, 'utf8')
+            print("received", temp)
+            c.receive_packet(temp)
     count+=1
 
 de=c.decoded_chunks
