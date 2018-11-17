@@ -29,7 +29,7 @@ def solo_decode(packet,size,error=5):
         return -1
 
 
-packets = receive(packet_size=8*8, baud=values.baud, signal_cf=values.sig_cf, clock_cf=values.clock_cf, fdev=values.delta, fs=values.fs, duration=30, taps=50, width = 200)
+packets = receive(packet_size=7*8, baud=values.baud, signal_cf=values.sig_cf, clock_cf=values.clock_cf, fdev=values.delta, fs=values.fs, duration=30, taps=50, width = 200)
 
 count=0
 while not c.isDone() and count<len(packets):
@@ -37,11 +37,11 @@ while not c.isDone() and count<len(packets):
     s = ""
     for b in received:
         s+=str(b)
-    if len(s) != 8*8:
+    if len(s) != 7*8:
         print('wrong number of bits')
         count+=1
         continue
-    temp=solo_decode(s,8*8)
+    temp=solo_decode(s,7*8)
     if temp != -1:
         temp = bytearray(temp, 'utf8')
         c.receive_packet(temp)
