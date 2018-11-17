@@ -121,7 +121,7 @@ class Packet:
             chunks[i] = new_chunk
         chunks = [np.array([chunk.split()]) for chunk in chunks]
         #print(len(chunks))
-        print(chunks)
+        #print(chunks)
         # print(chunks.pop())
         # print(chunks.pop())
         # print(chunks.pop())
@@ -148,7 +148,7 @@ class Packet:
             chunks[i] = new_chunk
         chunks = [np.array([chunk.split()]) for chunk in chunks]
         h = np.zeros(self.chunk_size)
-        print(chunks)
+        #print(chunks)
         for chunk in chunks:
             h = self.get_complement_sum(h,chunk)
         return all(h == np.ones(self.chunk_size))
