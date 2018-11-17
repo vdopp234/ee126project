@@ -16,14 +16,13 @@ class Packet:
             self.extra_bits = ''
             for _ in range(8):
                 self.extra_bits += str(random.randint(0, 1))
-            self.data_len = 16
             self.chunk_size = 8
+            self.data_len = self.chunk_size * 2
             self.data = [self.input[:self.chunk_size], self.input[self.chunk_size:self.chunk_size*2]]
             self.meta_data = self.input[self.data_len:]
             self.total_data = list(self.data)
             self.total_data.append(self.meta_data)
             self.total_data.append(self.extra_bits[:self.chunk_size])
-            self.total_data.append(self.extra_bits[self.chunk_size:])
             #self.total_data.append(self.meta_data[self.chunk_size:])
             self.checksum = self.get_checksum() #16 bits
         else:
@@ -122,7 +121,7 @@ class Packet:
             chunks[i] = new_chunk
         chunks = [np.array([chunk.split()]) for chunk in chunks]
         #print(len(chunks))
-        #print(chunks)
+        print(chunks)
         # print(chunks.pop())
         # print(chunks.pop())
         # print(chunks.pop())
@@ -149,18 +148,24 @@ class Packet:
             chunks[i] = new_chunk
         chunks = [np.array([chunk.split()]) for chunk in chunks]
         h = np.zeros(self.chunk_size)
-        #print(chunks)
+        print(chunks)
         for chunk in chunks:
             h = self.get_complement_sum(h,chunk)
-        #print(h)
-        #print(h)
         return all(h == np.ones(self.chunk_size))
 #Debugging
 #
 #
-# input = '10000110010111101010110001100000011100010010101010000001101101011000011001011110101011000110000001110001001010101000000110110101'
+# input = '100010101010001101010101'
 # a = Packet(input)
-# c = '1011010011000001'
+# s = ''
+# c = (a.checksum)
+# for c1 in c:
+#     s += str(c1)
+# x = a.extra_bits
 #
-# b = Packet(c+input, sent = True)
+# print(type(x))
+# print(type(c))
+# print(type(input))
+#
+# b = Packet(x+s+input, sent = True)
 # print(b.check_checksum())
