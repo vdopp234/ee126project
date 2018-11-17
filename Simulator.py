@@ -15,24 +15,26 @@ packet = b.encode()
 final_packet=[]
 for p in packet:
     check=Packet(p)
-    # print(check.checksum)
-    # print(check.total_data)
-
     final_packet.append(check.get_final_packet())
 
+print(final_packet[0])
+print(final_packet[0][24:])
+#print('sent')
 #send file
 c = Receiver()
 count = 0
-packet == packet[::-1]
 while not c.isDone() and count<len(packet):
     received=final_packet[count]
-    print(received)
+    #print(received)
+    #print(received)
     check=Packet(received, sent = True)
-    print(check.check_checksum())
     if check.check_checksum():
-
+        #print(check.get_received_packet())
         temp=check.get_received_packet()
+        if count == 0:
+            print(temp)
         temp=bytearray(temp,'utf8')
+        #print(temp)
         c.receive_packet(temp)
     count+=1
 de=c.decoded_chunks

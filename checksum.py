@@ -37,14 +37,32 @@ class Packet:
             self.total_data.append(self.checksum)
             self.total_data.append(self.extra_bits[:self.chunk_size])
             self.total_data.append(self.extra_bits[self.chunk_size:])
-            self.meta_data = self.input[self.chunk_size*5: self.chunk_size*6]
+            self.meta_data = self.input[self.chunk_size*5:]
             self.total_data.append(self.meta_data)
 
     def get_final_packet(self):
-        return self.data + self.meta_data
+        '''
+        Returns packet in the following order:
+        extra_bits + checksum + meta_data
+        '''
+        out = ''
+        for d in self.data:
+            out += d
+        #print(self.checksum)
+        c = ''
+        for a in self.checksum:
+            c += str(a)
+        return self.extra_bits + c + out + self.meta_data
+
     def get_received_packet(self):
-        packet= self.input
-        return packet[self.chunk_size*3:]
+        '''
+        Returns data of received packet
+        '''
+        if self.sent == False:
+            raise Exception('Must be received packet')
+
+        #return self.input[self.chunk_size*3:self.chunk_size*5]
+        return self.input[self.chunk_size*3:]
 
     def get_complement_sum(self, one, two):
         '''
@@ -105,7 +123,7 @@ class Packet:
             chunks[i] = new_chunk
         chunks = [np.array([chunk.split()]) for chunk in chunks]
         #print(len(chunks))
-        print(chunks)
+        #print(chunks)
         # print(chunks.pop())
         # print(chunks.pop())
         # print(chunks.pop())
@@ -132,7 +150,7 @@ class Packet:
             chunks[i] = new_chunk
         chunks = [np.array([chunk.split()]) for chunk in chunks]
         h = np.zeros(self.chunk_size)
-        print(chunks)
+        #print(chunks)
         for chunk in chunks:
             h = self.get_complement_sum(h,chunk)
         #print(h)
