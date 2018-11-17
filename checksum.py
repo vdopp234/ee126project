@@ -14,7 +14,7 @@ class Packet:
             self.input = input
         if not sent:
             self.extra_bits = ''
-            for _ in range(16):
+            for _ in range(8):
                 self.extra_bits += str(random.randint(0, 1))
             self.data_len = 16
             self.chunk_size = 8
@@ -30,20 +30,19 @@ class Packet:
             self.packet_size = 16
             self.chunk_size = 8
             self.sent = True
-            self.extra_bits = self.input[:self.chunk_size*2]
-            self.checksum = self.input[self.chunk_size*2:self.chunk_size*3]
-            self.data = [self.input[self.chunk_size*3:self.chunk_size*4], self.input[self.chunk_size*4:self.chunk_size*5]]
+            self.extra_bits = self.input[:self.chunk_size*1]
+            self.checksum = self.input[self.chunk_size*1:self.chunk_size*2]
+            self.data = [self.input[self.chunk_size*2:self.chunk_size*3], self.input[self.chunk_size*3:self.chunk_size*4]]
             self.total_data = list(self.data)
             self.total_data.append(self.checksum)
-            self.total_data.append(self.extra_bits[:self.chunk_size])
-            self.total_data.append(self.extra_bits[self.chunk_size:])
-            self.meta_data = self.input[self.chunk_size*5:]
+            self.total_data.append(self.extra_bits)
+            self.meta_data = self.input[self.chunk_size*4:]
             self.total_data.append(self.meta_data)
 
     def get_final_packet(self):
         '''
         Returns packet in the following order:
-        extra_bits + checksum + meta_data
+        extra_bits + checksum + data + meta_data
         '''
         out = ''
         for d in self.data:
@@ -56,13 +55,13 @@ class Packet:
 
     def get_received_packet(self):
         '''
-        Returns data of received packet
+        Returns data+metadata of received packet, in that order
         '''
         if self.sent == False:
             raise Exception('Must be received packet')
 
         #return self.input[self.chunk_size*3:self.chunk_size*5]
-        return self.input[self.chunk_size*3:]
+        return self.input[len(self.extra_bits) + len(self.checksum):]
 
     def get_complement_sum(self, one, two):
         '''
