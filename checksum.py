@@ -14,7 +14,7 @@ class Packet:
             self.input = input
         if not sent:
             self.extra_bits = ''
-            for _ in range(8):
+            for _ in range(16):
                 self.extra_bits += str(random.randint(0, 1))
             self.chunk_size = 8
             self.data_len = self.chunk_size * 2
@@ -23,19 +23,21 @@ class Packet:
             self.total_data = list(self.data)
             self.total_data.append(self.meta_data)
             self.total_data.append(self.extra_bits[:self.chunk_size])
+            self.total_data.append(self.extra_bits[self.chunk_size:])
             #self.total_data.append(self.meta_data[self.chunk_size:])
             self.checksum = self.get_checksum() #16 bits
         else:
             self.packet_size = 16
             self.chunk_size = 8
             self.sent = True
-            self.extra_bits = self.input[:self.chunk_size*1]
-            self.checksum = self.input[self.chunk_size*1:self.chunk_size*2]
-            self.data = [self.input[self.chunk_size*2:self.chunk_size*3], self.input[self.chunk_size*3:self.chunk_size*4]]
+            self.extra_bits = self.input[:self.chunk_size*2]
+            self.checksum = self.input[self.chunk_size*2:self.chunk_size*3]
+            self.data = [self.input[self.chunk_size*3:self.chunk_size*4], self.input[self.chunk_size*4:self.chunk_size*5]]
             self.total_data = list(self.data)
             self.total_data.append(self.checksum)
-            self.total_data.append(self.extra_bits)
-            self.meta_data = self.input[self.chunk_size*4:]
+            self.total_data.append(self.extra_bits[:self.chunk_size])
+            self.total_data.append(self.extra_bits[self.chunk_size:])
+            self.meta_data = self.input[self.chunk_size*5:]
             self.total_data.append(self.meta_data)
 
     def get_final_packet(self):
@@ -155,17 +157,17 @@ class Packet:
 #Debugging
 #
 #
-# input = '100010101010001101010101'
-# a = Packet(input)
-# s = ''
-# c = (a.checksum)
-# for c1 in c:
-#     s += str(c1)
-# x = a.extra_bits
+input = '100010101010001101010101'
+a = Packet(input)
+s = ''
+c = (a.checksum)
+for c1 in c:
+    s += str(c1)
+x = a.extra_bits
 #
 # print(type(x))
 # print(type(c))
 # print(type(input))
 #
-# b = Packet(x+s+input, sent = True)
-# print(b.check_checksum())
+b = Packet(x+s+input, sent = True)
+print(b.check_checksum())
