@@ -46,9 +46,9 @@ while not c.isDone() and count<len(packets):
         check = Pack(temp, sent=True)
         if check.check_checksum():
             temp = check.get_received_packet()
-        temp = bytearray(temp, 'utf8')
-        print("received", temp)
-        c.receive_packet(temp)
+            temp = bytearray(temp, 'utf8')
+            print("received", temp)
+            c.receive_packet(temp)
     count+=1
 
 de=c.decoded_chunks

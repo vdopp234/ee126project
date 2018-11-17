@@ -74,7 +74,7 @@ for p in packet:
 bits=''
 packet_size=5*8
 for p in final_packet:
-    bits+=solo_encode(p, packet_size)
+    bits+=solo_encode(final_packet[0], packet_size)
 
 
 #
