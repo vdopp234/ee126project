@@ -11,7 +11,7 @@ a = HuffmanCode()
 
 c = Receiver()
 
-packets = receive(packet_size=8+16+8, baud=values.baud, signal_cf=values.sig_cf, fdev=values.delta, fs=values.fs, duration=15, taps=values.taps, width = 100)
+packets = receive(packet_size=values.packet_size, baud=values.baud, signal_cf=values.sig_cf, fdev=values.delta, fs=values.fs, duration=15, taps=values.taps, width = 100)
 
 count=0
 while not c.isDone() and count<len(packets):
@@ -19,7 +19,7 @@ while not c.isDone() and count<len(packets):
     s = ""
     for b in received:
         s+=str(b)
-    if len(s) != 8+16+8:
+    if len(s) != values.packet_size:
         print('wrong number of bits')
         count+=1
         continue

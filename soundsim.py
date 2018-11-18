@@ -6,7 +6,6 @@ from HuffmanCode import *
 from bitarray import bitarray
 import sounddevice as sd
 import values
-sample = 500
 a = HuffmanCode()
 encode=a.compress("test.txt")
 
@@ -36,7 +35,7 @@ a = HuffmanCode()
 
 c = Receiver()
 print("started decoding")
-packets = receiveFromSignal(sig, packet_size=8+16+8, baud=values.baud, signal_cf=values.sig_cf, fdev=values.delta, fs=values.fs, taps=values.taps, width = 100)
+packets = receiveFromSignal(sig, packet_size=values.packet_size, baud=values.baud, signal_cf=values.sig_cf, fdev=values.delta, fs=values.fs, taps=values.taps, width = 100)
 print(packets)
 count=0
 acc = 0
@@ -47,7 +46,7 @@ while not c.isDone() and count<len(packets):
     s = ""
     for b in received:
         s+=str(b)
-    if len(s) != 8+16+8:
+    if len(s) != values.packet_size:
         count+=1
         continue
     check=Pack(s, sent=True)
